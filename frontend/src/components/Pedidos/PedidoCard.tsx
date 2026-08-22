@@ -56,7 +56,7 @@ export default function PedidoCard({
         )}
       </div>
 
-      {variant === 'domiciliario' && (
+      {(variant === 'domiciliario' || (variant === 'admin' && pedido.tipoEntrega === 'Domicilio')) && (
         <div className="mt-2 space-y-1 text-sm text-gray-700">
           <p>{pedido.direccion}</p>
           {pedido.nombreEntrega && <p>Entregar a: {pedido.nombreEntrega}</p>}
@@ -68,6 +68,18 @@ export default function PedidoCard({
           <>
             <Button variant="secondary" onClick={onEditar}>EDITAR</Button>
             <Button variant="secondary" onClick={onCancelar}>CANCELAR</Button>
+            {pedido.estado === 'Pendiente' && (
+              <Button variant="primary" onClick={onMarcarListo}>LISTO</Button>
+            )}
+            {pedido.estado === 'Listo' && (
+              <>
+                <Button variant="secondary" onClick={onQuitarListo}>QUITAR LISTO</Button>
+                <Button variant="primary" onClick={onEntregado}>ENTREGADO</Button>
+              </>
+            )}
+            {pedido.tipoEntrega === 'Domicilio' && (
+              <Button variant="secondary" onClick={onAbrirMaps}>ABRIR EN MAPS</Button>
+            )}
           </>
         )}
 

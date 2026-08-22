@@ -10,6 +10,7 @@ import VentasDashboard from '../components/Dashboard/VentasDashboard';
 import Modal from '../components/common/Modal';
 import Loading from '../components/common/Loading';
 import Button from '../components/common/Button';
+import { abrirEnMaps } from '../utils/maps';
 import type { Pedido } from '../types';
 
 type Vista = 'pedidos' | 'dashboard';
@@ -93,6 +94,10 @@ export default function AdminPage() {
               onVerMas={setPedidoDetalle}
               onEditar={setPedidoEditando}
               onCancelar={setPedidoCancelando}
+              onMarcarListo={(p) => setEstado(p.id, 'Listo')}
+              onQuitarListo={(p) => setEstado(p.id, 'Pendiente')}
+              onEntregado={(p) => setEstado(p.id, 'Entregado')}
+              onAbrirMaps={(p) => abrirEnMaps(p.direccion)}
             />
           )}
         </>
@@ -122,6 +127,17 @@ export default function AdminPage() {
             setPedidoCancelando(pedidoDetalle);
             setPedidoDetalle(null);
           }}
+          onAbrirMaps={
+            pedidoDetalle.tipoEntrega === 'Domicilio' ? () => abrirEnMaps(pedidoDetalle.direccion) : undefined
+          }
+          onEntregado={
+            pedidoDetalle.estado === 'Listo'
+              ? () => {
+                  setEstado(pedidoDetalle.id, 'Entregado');
+                  setPedidoDetalle(null);
+                }
+              : undefined
+          }
         />
       )}
 

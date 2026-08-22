@@ -5,14 +5,10 @@ import BottomNav from '../components/Layout/BottomNav';
 import PedidoList from '../components/Pedidos/PedidoList';
 import PedidoDetail from '../components/Pedidos/PedidoDetail';
 import Loading from '../components/common/Loading';
+import { abrirEnMaps } from '../utils/maps';
 import type { Pedido } from '../types';
 
 type Tab = 'listos' | 'entregados';
-
-function abrirEnMaps(direccion: string) {
-  const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
-  window.open(url, '_blank');
-}
 
 export default function DomiciliarioPage() {
   const { pedidos, loading, fetchPedidos, setEstado } = usePedidosStore();
