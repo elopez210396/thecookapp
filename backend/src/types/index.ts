@@ -42,8 +42,7 @@ export interface Pedido {
   items: ItemPedido[];
   tipoEntrega: TipoEntrega;
   direccion: string;
-  direccionAlternativa?: string;
-  nombreAlternativo?: string;
+  nombreEntrega?: string;
   fechaCreacion: string;
   fechaEntrega: string;
   estado: EstadoPedido;

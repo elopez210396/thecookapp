@@ -5,17 +5,16 @@ import type { Pedido, ItemPedido } from '../types/index.js';
 const SHEET_NAME = 'Pedidos';
 const HEADERS = [
   'id',
-  'clienteId',
-  'clienteNombre',
+  'cliente_id',
+  'cliente_nombre',
   'items',
-  'tipoEntrega',
+  'tipo_entrega',
   'direccion',
-  'direccionAlternativa',
-  'nombreAlternativo',
-  'fechaCreacion',
-  'fechaEntrega',
+  'nombre_entrega',
+  'fecha_creacion',
+  'fecha_entrega',
   'estado',
-  'llevaTarjeta',
+  'lleva_tarjeta',
   'texto_tarjeta',
 ];
 
@@ -29,17 +28,16 @@ function rowToPedido(row: Record<string, string>): Pedido {
 
   return {
     id: row.id,
-    clienteId: row.clienteId,
-    clienteNombre: row.clienteNombre,
+    clienteId: row.cliente_id,
+    clienteNombre: row.cliente_nombre,
     items,
-    tipoEntrega: row.tipoEntrega as Pedido['tipoEntrega'],
+    tipoEntrega: row.tipo_entrega as Pedido['tipoEntrega'],
     direccion: row.direccion,
-    direccionAlternativa: row.direccionAlternativa || undefined,
-    nombreAlternativo: row.nombreAlternativo || undefined,
-    fechaCreacion: row.fechaCreacion,
-    fechaEntrega: row.fechaEntrega,
+    nombreEntrega: row.nombre_entrega || undefined,
+    fechaCreacion: row.fecha_creacion,
+    fechaEntrega: row.fecha_entrega,
     estado: row.estado as Pedido['estado'],
-    llevaTarjeta: row.llevaTarjeta === 'TRUE' || row.llevaTarjeta === 'true',
+    llevaTarjeta: row.lleva_tarjeta === 'TRUE' || row.lleva_tarjeta === 'true',
     textoTarjeta: row.texto_tarjeta || undefined,
   };
 }
@@ -47,17 +45,16 @@ function rowToPedido(row: Record<string, string>): Pedido {
 function pedidoToRow(pedido: Pedido): Record<string, string> {
   return {
     id: pedido.id,
-    clienteId: pedido.clienteId,
-    clienteNombre: pedido.clienteNombre,
+    cliente_id: pedido.clienteId,
+    cliente_nombre: pedido.clienteNombre,
     items: JSON.stringify(pedido.items),
-    tipoEntrega: pedido.tipoEntrega,
+    tipo_entrega: pedido.tipoEntrega,
     direccion: pedido.direccion,
-    direccionAlternativa: pedido.direccionAlternativa || '',
-    nombreAlternativo: pedido.nombreAlternativo || '',
-    fechaCreacion: pedido.fechaCreacion,
-    fechaEntrega: pedido.fechaEntrega,
+    nombre_entrega: pedido.nombreEntrega || '',
+    fecha_creacion: pedido.fechaCreacion,
+    fecha_entrega: pedido.fechaEntrega,
     estado: pedido.estado,
-    llevaTarjeta: pedido.llevaTarjeta ? 'TRUE' : 'FALSE',
+    lleva_tarjeta: pedido.llevaTarjeta ? 'TRUE' : 'FALSE',
     texto_tarjeta: pedido.textoTarjeta || '',
   };
 }

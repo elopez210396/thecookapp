@@ -58,8 +58,8 @@ export default function PedidoCard({
 
       {variant === 'domiciliario' && (
         <div className="mt-2 space-y-1 text-sm text-gray-700">
-          <p>{pedido.direccionAlternativa || pedido.direccion}</p>
-          {pedido.nombreAlternativo && <p>Entregar a: {pedido.nombreAlternativo}</p>}
+          <p>{pedido.direccion}</p>
+          {pedido.nombreEntrega && <p>Entregar a: {pedido.nombreEntrega}</p>}
         </div>
       )}
 

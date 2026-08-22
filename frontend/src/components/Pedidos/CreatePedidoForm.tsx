@@ -15,8 +15,7 @@ export interface PedidoFormValues {
   items: ItemPedido[];
   tipoEntrega: TipoEntrega;
   direccion: string;
-  direccionAlternativa?: string;
-  nombreAlternativo?: string;
+  nombreEntrega?: string;
   fechaEntrega: string;
   llevaTarjeta: boolean;
   textoTarjeta?: string;
@@ -46,9 +45,9 @@ export default function CreatePedidoForm({ pedido, onSubmit, onCancel }: CreateP
     ],
   );
   const [tipoEntrega, setTipoEntrega] = useState<TipoEntrega>(pedido?.tipoEntrega ?? 'Domicilio');
-  const [usarOtraDireccion, setUsarOtraDireccion] = useState(!!pedido?.direccionAlternativa);
-  const [direccionAlternativa, setDireccionAlternativa] = useState(pedido?.direccionAlternativa ?? '');
-  const [nombreAlternativo, setNombreAlternativo] = useState(pedido?.nombreAlternativo ?? '');
+  const [usarOtraDireccion, setUsarOtraDireccion] = useState(!!pedido?.nombreEntrega);
+  const [direccionEntrega, setDireccionEntrega] = useState(pedido?.direccion ?? '');
+  const [nombreEntrega, setNombreEntrega] = useState(pedido?.nombreEntrega ?? '');
   const [fechaEntrega, setFechaEntrega] = useState(
     pedido ? toDatetimeLocalValue(pedido.fechaEntrega) : '',
   );
@@ -111,9 +110,8 @@ export default function CreatePedidoForm({ pedido, onSubmit, onCancel }: CreateP
         clienteNombre: clienteSeleccionado.nombre,
         items: itemsCompletos,
         tipoEntrega,
-        direccion: clienteSeleccionado.direccion,
-        direccionAlternativa: usarOtraDireccion ? direccionAlternativa : undefined,
-        nombreAlternativo: usarOtraDireccion ? nombreAlternativo : undefined,
+        direccion: usarOtraDireccion ? direccionEntrega : clienteSeleccionado.direccion,
+        nombreEntrega: usarOtraDireccion ? nombreEntrega.trim() || undefined : undefined,
         fechaEntrega: new Date(fechaEntrega).toISOString(),
         llevaTarjeta,
         textoTarjeta: llevaTarjeta ? textoTarjeta.trim() || undefined : undefined,
@@ -226,14 +224,14 @@ export default function CreatePedidoForm({ pedido, onSubmit, onCancel }: CreateP
             <div className="mt-2 space-y-2">
               <input
                 placeholder="Dirección alternativa"
-                value={direccionAlternativa}
-                onChange={(e) => setDireccionAlternativa(e.target.value)}
+                value={direccionEntrega}
+                onChange={(e) => setDireccionEntrega(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
               />
               <input
                 placeholder="Nombre a quien entrega"
-                value={nombreAlternativo}
-                onChange={(e) => setNombreAlternativo(e.target.value)}
+                value={nombreEntrega}
+                onChange={(e) => setNombreEntrega(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
               />
             </div>

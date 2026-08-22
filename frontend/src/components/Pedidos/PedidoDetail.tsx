@@ -41,8 +41,8 @@ export default function PedidoDetail({ pedido, onClose, onEditar, onCancelar, on
         {pedido.tipoEntrega === 'Domicilio' && (
           <div>
             <p className="font-semibold text-gray-500">Dirección</p>
-            <p>{pedido.direccionAlternativa || pedido.direccion}</p>
-            {pedido.nombreAlternativo && <p>Entregar a: {pedido.nombreAlternativo}</p>}
+            <p>{pedido.direccion}</p>
+            {pedido.nombreEntrega && <p>Entregar a: {pedido.nombreEntrega}</p>}
           </div>
         )}
 

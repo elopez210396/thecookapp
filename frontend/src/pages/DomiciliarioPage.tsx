@@ -27,7 +27,7 @@ export default function DomiciliarioPage() {
   const listos = pedidos.filter((p) => p.estado === 'Listo' && esDomicilio(p));
   const entregados = pedidos.filter((p) => p.estado === 'Entregado' && esDomicilio(p));
 
-  const handleAbrirMaps = (p: Pedido) => abrirEnMaps(p.direccionAlternativa || p.direccion);
+  const handleAbrirMaps = (p: Pedido) => abrirEnMaps(p.direccion);
 
   return (
     <div className="min-h-screen bg-gray-100 pb-8">
