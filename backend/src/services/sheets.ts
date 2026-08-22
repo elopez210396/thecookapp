@@ -70,11 +70,11 @@ export async function updateRowById(
   }
 
   const values = [headers.map((h) => updatedRow[h] ?? '')];
-  const rowNumber = rowIndex + 1; // 1-indexed, +1 to account for header row already in rowIndex
+  const rowNumber = rowIndex + 1; // 1-indexed sheet row (rowIndex already accounts for the header row)
 
   await sheets.spreadsheets.values.update({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${sheetName}!A${rowNumber + 1}:${String.fromCharCode(65 + headers.length - 1)}${rowNumber + 1}`,
+    range: `${sheetName}!A${rowNumber}:${String.fromCharCode(65 + headers.length - 1)}${rowNumber}`,
     valueInputOption: 'RAW',
     requestBody: { values },
   });
