@@ -1,5 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://thecookapp-2slo.onrender.com/api/:path*" }
+    { "source": "/api/:path*", "destination": "https://thecookapp-2slo.onrender.com/api/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
