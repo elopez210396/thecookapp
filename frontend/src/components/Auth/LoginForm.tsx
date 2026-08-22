@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
-import { ROLES_HOME } from '../../utils/constants';
+import { LAST_EMAIL_KEY, ROLES_HOME } from '../../utils/constants';
 import Button from '../common/Button';
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => localStorage.getItem(LAST_EMAIL_KEY) ?? '');
   const [password, setPassword] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
   const login = useAuthStore((s) => s.login);

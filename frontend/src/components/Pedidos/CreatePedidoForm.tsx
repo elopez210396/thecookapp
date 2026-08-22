@@ -3,6 +3,7 @@ import type { Cliente, ItemPedido, Pedido, TipoEntrega } from '../../types';
 import { useClientesStore } from '../../store/clientesStore';
 import { useProductosStore } from '../../store/productosStore';
 import { toDatetimeLocalValue } from '../../utils/dates';
+import { formatProducto } from '../../utils/formatting';
 import ClienteSelect from '../Clientes/ClienteSelect';
 import ClienteForm from '../Clientes/ClienteForm';
 import Button from '../common/Button';
@@ -18,7 +19,7 @@ export interface PedidoFormValues {
   nombreAlternativo?: string;
   fechaEntrega: string;
   llevaTarjeta: boolean;
-  notas?: string;
+  textoTarjeta?: string;
 }
 
 interface CreatePedidoFormProps {
@@ -30,6 +31,7 @@ interface CreatePedidoFormProps {
 interface ItemDraft {
   productoId: string;
   cantidad: number;
+  sabor?: string;
 }
 
 export default function CreatePedidoForm({ pedido, onSubmit, onCancel }: CreatePedidoFormProps) {
@@ -39,7 +41,9 @@ export default function CreatePedidoForm({ pedido, onSubmit, onCancel }: CreateP
   const [clienteId, setClienteId] = useState<string | null>(pedido?.clienteId ?? null);
   const [mostrarNuevoCliente, setMostrarNuevoCliente] = useState(false);
   const [items, setItems] = useState<ItemDraft[]>(
-    pedido?.items.map((i) => ({ productoId: i.productoId, cantidad: i.cantidad })) ?? [{ productoId: '', cantidad: 1 }],
+    pedido?.items.map((i) => ({ productoId: i.productoId, cantidad: i.cantidad, sabor: i.sabor })) ?? [
+      { productoId: '', cantidad: 1 },
+    ],
   );
   const [tipoEntrega, setTipoEntrega] = useState<TipoEntrega>(pedido?.tipoEntrega ?? 'Domicilio');
   const [usarOtraDireccion, setUsarOtraDireccion] = useState(!!pedido?.direccionAlternativa);
@@ -49,7 +53,7 @@ export default function CreatePedidoForm({ pedido, onSubmit, onCancel }: CreateP
     pedido ? toDatetimeLocalValue(pedido.fechaEntrega) : '',
   );
   const [llevaTarjeta, setLlevaTarjeta] = useState(pedido?.llevaTarjeta ?? false);
-  const [notas, setNotas] = useState(pedido?.notas ?? '');
+  const [textoTarjeta, setTextoTarjeta] = useState(pedido?.textoTarjeta ?? '');
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -89,11 +93,16 @@ export default function CreatePedidoForm({ pedido, onSubmit, onCancel }: CreateP
       return;
     }
 
-    const itemsCompletos: ItemPedido[] = itemsValidos.map((it) => ({
-      productoId: it.productoId,
-      cantidad: it.cantidad,
-      nombre: productos.find((p) => p.id === it.productoId)?.nombre ?? '',
-    }));
+    const itemsCompletos: ItemPedido[] = itemsValidos.map((it) => {
+      const producto = productos.find((p) => p.id === it.productoId);
+      return {
+        productoId: it.productoId,
+        cantidad: it.cantidad,
+        nombre: producto ? formatProducto(producto) : '',
+        sabor: producto?.requiereSabor ? it.sabor?.trim() || undefined : undefined,
+        precioUnitario: producto?.precio ?? 0,
+      };
+    });
 
     setSaving(true);
     try {
@@ -107,7 +116,7 @@ export default function CreatePedidoForm({ pedido, onSubmit, onCancel }: CreateP
         nombreAlternativo: usarOtraDireccion ? nombreAlternativo : undefined,
         fechaEntrega: new Date(fechaEntrega).toISOString(),
         llevaTarjeta,
-        notas: notas.trim() || undefined,
+        textoTarjeta: llevaTarjeta ? textoTarjeta.trim() || undefined : undefined,
       });
     } finally {
       setSaving(false);
@@ -129,40 +138,56 @@ export default function CreatePedidoForm({ pedido, onSubmit, onCancel }: CreateP
       <div>
         <p className="mb-1 text-sm font-semibold text-gray-700">Items</p>
         <div className="space-y-2">
-          {items.map((item, index) => (
-            <div key={index} className="flex items-end gap-2 rounded-lg border border-gray-200 p-3">
-              <div className="flex-1">
-                <label className="mb-1 block text-xs text-gray-500">Producto</label>
-                <select
-                  value={item.productoId}
-                  onChange={(e) => handleItemChange(index, 'productoId', e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
-                >
-                  <option value="">Selecciona...</option>
-                  {productos.map((p) => (
-                    <option key={p.id} value={p.id}>{p.nombre}</option>
-                  ))}
-                </select>
+          {items.map((item, index) => {
+            const productoSeleccionado = productos.find((p) => p.id === item.productoId);
+            return (
+              <div key={index} className="space-y-2 rounded-lg border border-gray-200 p-3">
+                <div className="flex items-end gap-2">
+                  <div className="flex-1">
+                    <label className="mb-1 block text-xs text-gray-500">Producto</label>
+                    <select
+                      value={item.productoId}
+                      onChange={(e) => handleItemChange(index, 'productoId', e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
+                    >
+                      <option value="">Selecciona...</option>
+                      {productos.map((p) => (
+                        <option key={p.id} value={p.id}>{formatProducto(p)}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="w-20">
+                    <label className="mb-1 block text-xs text-gray-500">Cantidad</label>
+                    <input
+                      type="number"
+                      min={1}
+                      value={item.cantidad}
+                      onChange={(e) => handleItemChange(index, 'cantidad', Number(e.target.value))}
+                      className="w-full rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleQuitarItem(index)}
+                    className="pb-1.5 text-sm text-gray-400 hover:text-red-600"
+                  >
+                    ✕ Quitar
+                  </button>
+                </div>
+                {productoSeleccionado?.requiereSabor && (
+                  <div>
+                    <label className="mb-1 block text-xs text-gray-500">Sabor</label>
+                    <input
+                      type="text"
+                      value={item.sabor ?? ''}
+                      onChange={(e) => handleItemChange(index, 'sabor', e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
+                    />
+                  </div>
+                )}
               </div>
-              <div className="w-20">
-                <label className="mb-1 block text-xs text-gray-500">Cantidad</label>
-                <input
-                  type="number"
-                  min={1}
-                  value={item.cantidad}
-                  onChange={(e) => handleItemChange(index, 'cantidad', Number(e.target.value))}
-                  className="w-full rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={() => handleQuitarItem(index)}
-                className="pb-1.5 text-sm text-gray-400 hover:text-red-600"
-              >
-                ✕ Quitar
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <Button type="button" variant="secondary" className="mt-2" onClick={handleAgregarItem}>
           + Agregar Item
@@ -231,15 +256,17 @@ export default function CreatePedidoForm({ pedido, onSubmit, onCancel }: CreateP
         ¿Lleva Tarjeta?
       </label>
 
-      <div>
-        <p className="mb-1 text-sm font-semibold text-gray-700">Notas (opcional)</p>
-        <textarea
-          value={notas}
-          onChange={(e) => setNotas(e.target.value)}
-          rows={3}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-        />
-      </div>
+      {llevaTarjeta && (
+        <div>
+          <p className="mb-1 text-sm font-semibold text-gray-700">Texto de la Tarjeta</p>
+          <textarea
+            value={textoTarjeta}
+            onChange={(e) => setTextoTarjeta(e.target.value)}
+            rows={3}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          />
+        </div>
+      )}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 

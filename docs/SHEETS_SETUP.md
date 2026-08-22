@@ -16,11 +16,16 @@ Crea un Google Sheet con 4 hojas (tabs), con estos encabezados exactos en la fil
 |----|--------|----------|-----------|
 
 ### Hoja "Productos"
-| id | nombre |
-|----|--------|
+| id | nombre | cantidad | unidad | precio | requiereSabor |
+|----|--------|----------|--------|--------|---------------|
+
+- `cantidad`: texto, ej. `8` o `1/4`
+- `unidad`: ej. `unidades`, `gr`, `lb`
+- `precio`: número sin puntos ni símbolo de moneda, ej. `6000`
+- `requiereSabor`: `TRUE` o `FALSE` — si es `TRUE`, al crear un pedido con este producto se habilita un campo para anotar el sabor elegido
 
 ### Hoja "Pedidos"
-| id | clienteId | clienteNombre | items | tipoEntrega | direccion | direccionAlternativa | nombreAlternativo | fechaCreacion | fechaEntrega | estado | llevaTarjeta | notas |
+| id | clienteId | clienteNombre | items | tipoEntrega | direccion | direccionAlternativa | nombreAlternativo | fechaCreacion | fechaEntrega | estado | llevaTarjeta | texto_tarjeta |
 |----|-----------|---------------|-------|-------------|-----------|----------------------|--------------------|-----------------|--------------|--------|--------------|-------|
 
 - `items`: JSON string, ej: `[{"productoId":"p1","cantidad":2,"nombre":"Brownie"}]`

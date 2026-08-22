@@ -58,10 +58,10 @@ export default function PedidoDetail({ pedido, onClose, onEditar, onCancelar, on
           <p>{pedido.llevaTarjeta ? '🎴 Sí' : 'No'}</p>
         </div>
 
-        {pedido.notas && (
+        {pedido.textoTarjeta && (
           <div>
-            <p className="font-semibold text-gray-500">Notas</p>
-            <p>{pedido.notas}</p>
+            <p className="font-semibold text-gray-500">Texto de la Tarjeta</p>
+            <p>{pedido.textoTarjeta}</p>
           </div>
         )}
 

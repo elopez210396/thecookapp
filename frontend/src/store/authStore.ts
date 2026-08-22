@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import * as authApi from '../api/auth';
-import { TOKEN_KEY, USER_KEY } from '../utils/constants';
+import { LAST_EMAIL_KEY, TOKEN_KEY, USER_KEY } from '../utils/constants';
 import type { AuthResponse } from '../types';
 
 type Usuario = AuthResponse['usuario'];
@@ -25,6 +25,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const { token, usuario } = await authApi.login(email, password);
       localStorage.setItem(TOKEN_KEY, token);
       localStorage.setItem(USER_KEY, JSON.stringify(usuario));
+      localStorage.setItem(LAST_EMAIL_KEY, email);
       set({ usuario, loading: false });
       return usuario;
     } catch (err: any) {

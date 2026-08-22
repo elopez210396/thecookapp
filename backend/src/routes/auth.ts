@@ -1,9 +1,18 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { validateCredentials, generateToken } from '../services/auth.js';
 
 const router = Router();
 
-router.post('/login', async (req, res) => {
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Demasiados intentos. Intenta de nuevo en unos minutos.' },
+});
+
+router.post('/login', loginLimiter, async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ message: 'Email y contraseña son requeridos' });

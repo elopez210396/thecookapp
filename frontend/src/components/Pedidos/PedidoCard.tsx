@@ -1,6 +1,6 @@
 import type { Pedido } from '../../types';
 import { formatFechaEntrega } from '../../utils/dates';
-import { formatItemPedido } from '../../utils/formatting';
+import { calcularTotalPedido, formatItemPedido, formatMoney } from '../../utils/formatting';
 import Button from '../common/Button';
 
 export type PedidoCardVariant = 'admin' | 'cocina' | 'domiciliario';
@@ -46,7 +46,10 @@ export default function PedidoCard({
       <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
         <span className="font-medium text-gray-600">{formatFechaEntrega(pedido.fechaEntrega)}</span>
         {variant === 'admin' && (
-          <span className="text-gray-400">| {pedido.tipoEntrega.toUpperCase()}</span>
+          <>
+            <span className="text-gray-400">| {pedido.tipoEntrega.toUpperCase()}</span>
+            <span className="font-semibold text-gray-800">{formatMoney(calcularTotalPedido(pedido))}</span>
+          </>
         )}
         {variant === 'cocina' && esParaRecoger && (
           <span className="rounded bg-red-600 px-2 py-0.5 text-xs font-bold text-white">🔴 PARA RECOGER</span>

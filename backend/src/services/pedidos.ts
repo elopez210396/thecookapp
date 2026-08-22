@@ -16,7 +16,7 @@ const HEADERS = [
   'fechaEntrega',
   'estado',
   'llevaTarjeta',
-  'notas',
+  'texto_tarjeta',
 ];
 
 function rowToPedido(row: Record<string, string>): Pedido {
@@ -40,7 +40,7 @@ function rowToPedido(row: Record<string, string>): Pedido {
     fechaEntrega: row.fechaEntrega,
     estado: row.estado as Pedido['estado'],
     llevaTarjeta: row.llevaTarjeta === 'TRUE' || row.llevaTarjeta === 'true',
-    notas: row.notas || undefined,
+    textoTarjeta: row.texto_tarjeta || undefined,
   };
 }
 
@@ -58,7 +58,7 @@ function pedidoToRow(pedido: Pedido): Record<string, string> {
     fechaEntrega: pedido.fechaEntrega,
     estado: pedido.estado,
     llevaTarjeta: pedido.llevaTarjeta ? 'TRUE' : 'FALSE',
-    notas: pedido.notas || '',
+    texto_tarjeta: pedido.textoTarjeta || '',
   };
 }
 
