@@ -35,6 +35,7 @@ router.post('/login', loginLimiter, async (req, res) => {
       },
     });
   } catch (err) {
+    console.error('Error en /api/auth/login:', err);
     res.status(500).json({ message: 'Error al iniciar sesión' });
   }
 });
