@@ -13,7 +13,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between bg-white px-4 py-3 shadow-sm">
-      <span className="text-lg font-extrabold text-red-600">The Cook</span>
+      <img src="/logo.png" alt="The Cook" className="h-9 w-9 rounded-lg object-cover" />
       <button onClick={handleLogout} className="flex items-center gap-2 text-sm text-gray-600">
         <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">👤</span>
         <span className="hidden sm:inline">{usuario?.nombre}</span>
